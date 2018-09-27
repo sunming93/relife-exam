@@ -121,7 +121,7 @@ public class RequestBindToActionTests {
     }
 
     @Test
-    void should_return_response_404_code_for_the_exception() {
+    void should_return_response_status_code_for_the_exception() {
         RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
                 .addAction("/path",
                         RelifeMethod.GET,

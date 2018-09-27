@@ -57,7 +57,6 @@ public class RelifeMvcHandlerBuilder{
 
             if(mappingAnnotation != null && isValidParameter(method)){
                 RelifeRequestMapping requestMapping = (RelifeRequestMapping) mappingAnnotation;
-
                 RelifeAppHandler handler = request ->
                 {
                     try {

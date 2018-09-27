@@ -102,22 +102,22 @@ public class BindRequestToControllerTest {
     }
 
     @Test
-    void should_return_response_500_if_handler_throw_exception() {
+    void should_return_response_200_if_handler_return_null() {
         RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
-                .addController(HandlerExceptionController.class)
+                .addController(HandlerNullController.class)
                 .build();
         RelifeApp app = new RelifeApp(handler);
 
         RelifeResponse response = app.process(
                 new RelifeRequest("/path", RelifeMethod.GET));
 
-        assertEquals(500, response.getStatus());
+        assertEquals(200, response.getStatus());
     }
 
     @Test
-    void should_return_response_404_code_for_the_exception() {
+    void should_return_response_status_code_for_the_exception() {
         RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
-                .addController(DuplicateActionsController.class)
+                .addController(StatusCodeController.class)
                 .build();
         RelifeApp app = new RelifeApp(handler);
 
