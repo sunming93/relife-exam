@@ -1,5 +1,7 @@
 package com.tw.relife;
 
+import java.util.Objects;
+
 public class Action {
     private String path;
     private RelifeMethod method;
@@ -21,5 +23,16 @@ public class Action {
 
     public RelifeAppHandler getHandler() {
         return handler;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        Action other = (Action)object;
+        return other.path.equals(path) && other.method.equals(method);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path, method);
     }
 }

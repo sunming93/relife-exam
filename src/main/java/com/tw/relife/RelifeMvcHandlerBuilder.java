@@ -11,7 +11,11 @@ public class RelifeMvcHandlerBuilder{
             throw new IllegalArgumentException("the parameter of addAction can't be null");
         }
 
-        actions.add(new Action(path, method, handler));
+        Action action = new Action(path, method, handler);
+        if(actions.contains(action)){
+            actions.remove(actions.indexOf(action));
+        }
+        actions.add(action);
 
         return this;
     }
