@@ -7,6 +7,10 @@ public class RelifeApp implements RelifeAppHandler {
 
     public RelifeApp(RelifeAppHandler handler) {
         // TODO: You can start here
+        if(handler == null){
+            throw new IllegalArgumentException("handler can't be null.");
+        }
+
         this.handler = handler;
     }
 
