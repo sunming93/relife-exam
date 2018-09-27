@@ -18,7 +18,12 @@ public class RelifeApp implements RelifeAppHandler {
     public RelifeResponse process(RelifeRequest request) {
         // TODO: You can start here
         try {
-            return handler.process(request);
+            RelifeResponse response = handler.process(request);
+            if(response != null){
+                return handler.process(request);
+            }else {
+                return new RelifeResponse(200);
+            }
         }catch (Throwable throwable){
             RelifeStatusCode statusCodeAnnotation = throwable.getClass().getDeclaredAnnotation(RelifeStatusCode.class);
 
