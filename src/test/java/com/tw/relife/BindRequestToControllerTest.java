@@ -126,4 +126,42 @@ public class BindRequestToControllerTest {
 
         assertEquals(404, response.getStatus());
     }
+
+    @Test
+    void should_call_the_handler_of_action_if_addAction_first() {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
+                .addAction(
+                        "/path",
+                        RelifeMethod.GET,
+                        request -> new RelifeResponse(202, "Hi", "text/plain"))
+                .addController(OneActionController.class)
+                .build();
+        RelifeApp app = new RelifeApp(handler);
+
+        RelifeResponse response = app.process(
+                new RelifeRequest("/path", RelifeMethod.GET));
+
+        assertEquals(202, response.getStatus());
+        assertEquals("Hi", response.getContent());
+        assertEquals("text/plain", response.getContentType());
+    }
+
+    @Test
+    void should_call_the_handler_of_controller_if_addController_first() {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
+                .addController(OneActionController.class)
+                .addAction(
+                        "/path",
+                        RelifeMethod.GET,
+                        request -> new RelifeResponse(202, "Hi", "text/plain"))
+                .build();
+        RelifeApp app = new RelifeApp(handler);
+
+        RelifeResponse response = app.process(
+                new RelifeRequest("/path", RelifeMethod.GET));
+
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello from /path", response.getContent());
+        assertEquals("text/plain", response.getContentType());
+    }
 }
