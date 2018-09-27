@@ -7,12 +7,12 @@ public class RelifeApp implements RelifeAppHandler {
 
     public RelifeApp(RelifeAppHandler handler) {
         // TODO: You can start here
-        throw new NotImplementedException();
+        this.handler = handler;
     }
 
     @Override
     public RelifeResponse process(RelifeRequest request) {
         // TODO: You can start here
-        throw new NotImplementedException();
+        return handler.process(request);
     }
 }
