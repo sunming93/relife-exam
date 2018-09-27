@@ -8,14 +8,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class RelifeMvcHandlerBuilder{
     private Set<Action> actions = new HashSet<>();
-    private List<Class> controllers = new ArrayList<>();
 
     public RelifeMvcHandlerBuilder addAction(String path, RelifeMethod method, RelifeAppHandler handler) {
         if(path == null || method == null || handler == null){
@@ -50,8 +46,10 @@ public class RelifeMvcHandlerBuilder{
         return this;
     }
 
-    private void addToActions(Class controller) {
+    private void addToActions(Class controller){
         Method[] methods = controller.getDeclaredMethods();
+        Arrays.sort(methods, Comparator.comparing(Method::getName));
+
         for(Method method : methods){
             Annotation mappingAnnotation = method.getDeclaredAnnotation(RelifeRequestMapping.class);
 
@@ -60,10 +58,13 @@ public class RelifeMvcHandlerBuilder{
                 RelifeAppHandler handler = request ->
                 {
                     try {
+                        method.setAccessible(true);
                         return (RelifeResponse) method.invoke(controller.newInstance(), request);
                     }catch (InstantiationException e){}
                     catch (IllegalAccessException e1){}
-                    catch (InvocationTargetException e2){}
+                    catch (InvocationTargetException e2){
+                        throw e2.getCause();
+                    }
                     return null;
                 };
 

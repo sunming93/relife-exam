@@ -10,7 +10,7 @@ public class BindedActionHandler implements RelifeAppHandler {
     }
 
     @Override
-    public RelifeResponse process(RelifeRequest request) {
+    public RelifeResponse process(RelifeRequest request) throws Throwable {
         for(Action action : actions){
             if(request.getPath().equals(action.getPath()) && request.getMethod().equals(action.getMethod())){
                 return action.getHandler().process(request);
