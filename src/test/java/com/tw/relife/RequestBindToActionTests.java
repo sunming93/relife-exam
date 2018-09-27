@@ -1,5 +1,6 @@
 package com.tw.relife;
 
+import com.tw.relife.exceptions.SampleNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -72,8 +73,8 @@ public class RequestBindToActionTests {
         assertThrows(IllegalArgumentException.class,
                 () -> new RelifeMvcHandlerBuilder()
                         .addAction(
+                                "/path",
                                 null,
-                                RelifeMethod.GET,
                                 request -> new RelifeResponse(200, "Hello", "text/plain"))
         );
     }
@@ -83,9 +84,9 @@ public class RequestBindToActionTests {
         assertThrows(IllegalArgumentException.class,
                 () -> new RelifeMvcHandlerBuilder()
                         .addAction(
-                                null,
+                                "/path",
                                 RelifeMethod.GET,
-                                request -> new RelifeResponse(200, "Hello", "text/plain"))
+                                null)
         );
     }
 
@@ -102,5 +103,37 @@ public class RequestBindToActionTests {
         assertEquals(200, response.getStatus());
     }
 
+    @Test
+    void should_return_response_500_if_handler_throw_exception() {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
+                .addAction("/path",
+                        RelifeMethod.GET,
+                        request -> {
+                            throw new IllegalArgumentException();
+                })
+                .build();
+        RelifeApp app = new RelifeApp(handler);
 
+        RelifeResponse response = app.process(
+                new RelifeRequest("/path", RelifeMethod.GET));
+
+        assertEquals(500, response.getStatus());
+    }
+
+    @Test
+    void should_return_response_status_code_for_the_exception() {
+        RelifeAppHandler handler = new RelifeMvcHandlerBuilder()
+                .addAction("/path",
+                        RelifeMethod.GET,
+                        request -> {
+                            throw new SampleNotFoundException();
+                })
+                .build();
+        RelifeApp app = new RelifeApp(handler);
+
+        RelifeResponse response = app.process(
+                new RelifeRequest("/path", RelifeMethod.GET));
+
+        assertEquals(404, response.getStatus());
+    }
 }
