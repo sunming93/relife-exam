@@ -1,9 +1,6 @@
 package com.tw.relife;
 
 import com.tw.relife.exceptions.RelifeStatusCode;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.lang.annotation.Annotation;
 
 public class RelifeApp implements RelifeAppHandler {
     private final RelifeAppHandler handler;

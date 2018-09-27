@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExceptionResponseTest {
     @Test
-    void should_generate_response_from_exception() {
+    void should_generate_response_for_exception() {
         RelifeApp app = new RelifeApp(request -> {
             throw new SampleNotFoundException();
         });
