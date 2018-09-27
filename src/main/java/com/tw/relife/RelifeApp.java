@@ -1,6 +1,6 @@
 package com.tw.relife;
 
-import com.tw.relife.exceptions.RelifeStatusCode;
+import com.tw.relife.annotations.RelifeStatusCode;
 
 public class RelifeApp implements RelifeAppHandler {
     private final RelifeAppHandler handler;

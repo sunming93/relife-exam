@@ -1,4 +1,4 @@
-package com.tw.relife.exceptions;
+package com.tw.relife.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,6 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RelifeStatusCode {
-    int value();
+public @interface RelifeController {
 }

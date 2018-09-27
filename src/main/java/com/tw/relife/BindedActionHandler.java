@@ -2,10 +2,10 @@ package com.tw.relife;
 
 import java.util.List;
 
-public class BindedHandler implements RelifeAppHandler {
+public class BindedActionHandler implements RelifeAppHandler {
     private List<Action> actions;
 
-    public BindedHandler(List<Action> actions) {
+    public BindedActionHandler(List<Action> actions) {
         this.actions = actions;
     }
 
