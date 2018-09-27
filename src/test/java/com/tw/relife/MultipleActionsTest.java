@@ -45,8 +45,8 @@ public class MultipleActionsTest {
         RelifeRequest request = new RelifeRequest("/path", RelifeMethod.POST);
         RelifeResponse response = app.process(request);
 
-        assertEquals(403, response.getStatus());
-        assertEquals("second action", response.getContent());
+        assertEquals(200, response.getStatus());
+        assertEquals("first action", response.getContent());
         assertEquals("text/plain", response.getContentType());
     }
 }
