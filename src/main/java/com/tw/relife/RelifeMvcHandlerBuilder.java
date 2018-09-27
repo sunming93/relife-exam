@@ -1,7 +1,13 @@
 package com.tw.relife;
 
 import com.tw.relife.annotations.RelifeController;
+import com.tw.relife.annotations.RelifeRequestMapping;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,16 +28,65 @@ public class RelifeMvcHandlerBuilder{
     }
 
     public RelifeMvcHandlerBuilder addController(Class controller) {
+        if(controller == null){
+            throw new IllegalArgumentException("the parameter of addController can't be null");
+        }
 
-        controllers.add(controller);
+        if(Modifier.isAbstract(controller.getModifiers())){
+            throw new IllegalArgumentException("the parameter of addController can't be abstract");
+        }
+
+        if(controller.isInterface()){
+            throw new IllegalArgumentException("the parameter of addController can't be interface");
+        }
+
+        if(controller.getDeclaredAnnotation(RelifeController.class) == null){
+            throw new IllegalArgumentException("the parameter of addController don't have an annotation RelifeController");
+        }
+
+
+        addToActions(controller);
+
         return this;
     }
 
-    public RelifeAppHandler build() {
-        if(actions.size() > 0){
-            return new BindedActionHandler(new ArrayList<>(actions));
+    private void addToActions(Class controller) {
+        Method[] methods = controller.getDeclaredMethods();
+        for(Method method : methods){
+            Annotation mappingAnnotation = method.getDeclaredAnnotation(RelifeRequestMapping.class);
+
+            if(mappingAnnotation != null && isValidParameter(method)){
+                RelifeRequestMapping requestMapping = (RelifeRequestMapping) mappingAnnotation;
+
+                RelifeAppHandler handler = request ->
+                {
+                    try {
+                        return (RelifeResponse) method.invoke(controller.newInstance(), request);
+                    }catch (InstantiationException e){}
+                    catch (IllegalAccessException e1){}
+                    catch (InvocationTargetException e2){}
+                    return null;
+                };
+
+                addAction(requestMapping.value(), requestMapping.method(),handler);
+            }
         }
-        return new BindedControllerHandler(controllers);
+    }
+
+    private boolean isValidParameter(Method method) {
+        Parameter[] parameters = method.getParameters();
+        if(parameters.length != 1){
+            throw new IllegalArgumentException("the number of parameter isn't 1.");
+        }
+
+        if(parameters[0].getType() != RelifeRequest.class){
+            throw new IllegalArgumentException("the type of parameter isn't RelifeRequest.");
+        }
+        return true;
+    }
+
+    public RelifeAppHandler build() {
+            return new BindedActionHandler(new ArrayList<>(actions));
     }
 
 }
